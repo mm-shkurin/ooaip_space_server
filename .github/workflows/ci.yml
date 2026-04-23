@@ -6,7 +6,7 @@ on:
 
 env:
   DIR: ./
-  DOTNET_VERSION: '7.0.x'
+  DOTNET_VERSION: '9.0.x'
 
 jobs:
   test-and-coverage:
@@ -32,7 +32,7 @@ jobs:
             ${{ runner.os }}-nuget-
       
       - name: Style
-        run: dotnet format --verify-no-changes
+        run: dotnet format --verify-no-changes ooaip_space_server2026.slnx
 
       - name: Restore dependencies
         working-directory: ${{ env.DIR }}

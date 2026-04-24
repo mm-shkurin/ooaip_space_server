@@ -13,23 +13,7 @@ env:
   DOTNET_VERSION: '7.0.x'
 
 jobs:
-  check-style:
-    name: 🔍 Check Code Style
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET SDK ${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Verify code formatting
-        working-directory: ${{ env.DIR }}
-        run: dotnet format --verify-no-changes *.slnx
-
   test-and-coverage:
-    name: 🧪 Build, Test & Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 30
 

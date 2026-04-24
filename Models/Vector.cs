@@ -6,7 +6,6 @@ namespace OoaipSpaceServer2026.Models
     public class Vector
     {
         private readonly int[] _coordinates;
-
         public int[] Coordinates => _coordinates;
         public int Dimension => _coordinates.Length;
 

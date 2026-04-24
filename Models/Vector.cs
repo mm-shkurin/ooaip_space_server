@@ -64,12 +64,7 @@ namespace OoaipSpaceServer2026.Models
         {
             unchecked
             {
-                int hash = 17;
-                foreach (var coord in _coordinates)
-                {
-                    hash = hash * 23 + coord.GetHashCode();
-                }
-                return hash;
+                return _coordinates.Aggregate(17, (hash, coord) => hash * 23 + coord.GetHashCode());
             }
         }
     }

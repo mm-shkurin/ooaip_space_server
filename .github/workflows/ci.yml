@@ -25,6 +25,10 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Check code style
+        working-directory: ${{ env.DIR }}
+        run: dotnet format --verify-no-changes *.slnx
+
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:

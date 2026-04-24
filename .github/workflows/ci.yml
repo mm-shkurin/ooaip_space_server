@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: ["master"]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 env:
   DIR: ./
   DOTNET_VERSION: '7.0.x'
@@ -15,8 +19,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup .NET SDK ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v4
@@ -31,54 +33,38 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Checkstyle
+        run: dotnet format --verify-no-changes ooaip_space_server2026.sln
+
       - name: Restore dependencies
         working-directory: ${{ env.DIR }}
         run: dotnet restore
 
       - name: Build
         working-directory: ${{ env.DIR }}
-        run: dotnet build --configuration Debug --no-restore /p:ContinuousIntegrationBuild=true
+        run: dotnet build --configuration Release --no-restore
 
       - name: Test with coverage
         working-directory: ${{ env.DIR }}
-        run: |
-          dotnet test --configuration Debug \
-            --no-build \
-            --collect:"XPlat Code Coverage" \
-            --results-directory ./coverage \
-            /p:CoverletOutputFormat=opencover \
-            /p:MergeWith=../coverage/coverage.json \
-            /p:CoverletOutput=./coverage/coverage.opencover.xml \
-            --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-      - name: Upload coverage to Codecov + PR comment
-        uses: codecov/codecov-action@v4
+      - name: Generate Coverage Report & Enforce 90% Threshold
+        id: coverage
+        uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ${{ env.DIR }}/coverage/coverage.opencover.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-          verbose: true
-          comment: true
-          comment_config:
-            require_changes: true
-            require_base: true
-            require_head: true
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '90 90'
 
-      - name: Create coverage badge
-        if: github.event.pull_request.head.repo.full_name == github.repository
-        uses: simon-k/dotnet-code-coverage-badge@v1.0.0
-        id: create_coverage_badge
+      - name: Post Coverage Report to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: always()
         with:
-          label: Code Coverage
-          color: brightgreen
-          path: ${{ env.DIR }}/coverage/coverage.opencover.xml
-          gist-filename: code-coverage-${{ github.event.pull_request.number }}.json
-          gist-id: ${{ secrets.COVERAGE_GIST_ID }}
-          gist-auth-token: ${{ secrets.GIST_SECRET }}
-
-      - name: Print coverage summary
-        run: |
-          echo "### Code Coverage Report" >> $GITHUB_STEP_SUMMARY
-          echo "Coverage: ${{ steps.create_coverage_badge.outputs.percentage }}%" >> $GITHUB_STEP_SUMMARY
+          recreate: true
+          path: code-coverage-results.md

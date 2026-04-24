@@ -1,5 +1,5 @@
-namespace OoaipSpaceServer2026.Interfaces // Замените на ваш RootNamespace из .csproj
-{   
+namespace OoaipSpaceServer2026.Interfaces
+{
     public interface ICommand
     {
         void Execute();

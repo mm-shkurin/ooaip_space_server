@@ -78,7 +78,5 @@ namespace OoaipSpaceServer2026.Models
                 return hash;
             }
         }
-
-        public override string ToString() => $"Vector({string.Join(", ", _coordinates)})";
     }
 }

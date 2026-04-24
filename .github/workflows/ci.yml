@@ -33,6 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Checkstyle
+        run: dotnet format --verify-no-changes ooaip_space_server2026.slnx
+
       - name: Restore dependencies
         working-directory: ${{ env.DIR }}
         run: dotnet restore

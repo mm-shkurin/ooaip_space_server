@@ -11,8 +11,6 @@ namespace OoaipSpaceServer2026.Models
 
         public Vector(params int[] coordinates)
         {
-            if (coordinates is null)
-                throw new ArgumentNullException(nameof(coordinates));
             if (coordinates.Length == 0)
                 throw new ArgumentException("Vector must have at least one coordinate.", nameof(coordinates));
 
@@ -21,8 +19,6 @@ namespace OoaipSpaceServer2026.Models
 
         public Vector Add(Vector other)
         {
-            if (other is null)
-                throw new ArgumentNullException(nameof(other));
             if (Dimension != other.Dimension)
                 throw new ArgumentException($"Cannot add vectors of different dimensions: {Dimension} != {other.Dimension}.");
 
@@ -32,17 +28,11 @@ namespace OoaipSpaceServer2026.Models
 
         public static Vector operator +(Vector left, Vector right)
         {
-            if (left is null) throw new ArgumentNullException(nameof(left));
-            if (right is null) throw new ArgumentNullException(nameof(right));
             return left.Add(right);
         }
 
         public override bool Equals(object? obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
             if (obj is Vector other)
             {
                 return _coordinates.SequenceEqual(other.Coordinates);

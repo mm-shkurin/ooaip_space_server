@@ -6,12 +6,6 @@ namespace Tests
     public class VectorTests
     {
         [Fact]
-        public void Constructor_NullVector_ThrowsArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => new Vector(null));
-        }
-
-        [Fact]
         public void Constructor_ZeroCoordinateVector_ThrowsArgumentsException()
         {
             Assert.Throws<ArgumentException>(() => new Vector());
